@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script
+            src="https://code.jquery.com/jquery-1.12.4.min.js">
+    </script>
+
+    <title>Document</title>
+</head>
+<body>
+<header>
+    <div class="top_box">
+        <a href=""><img src="img/Logo.png" alt=""></a>
+        <button>Log In Now</button>
+    </div>
+    <div class="title">
+        <h1>Home of Dentistry</h1>
+        <p>Denteez was created by dentists for dentistry in order to make the life of everyone involved in dentistry
+            easier</p>
+    </div>
+</header>
+<section>
+    <div class="form">
+        <div class="form_box">
+            <form action="" method="post" enctype="multipart/form-data" class="form_">
+                <div class="data">
+                    <p class="text_info">Fields marked “*” are required</p>
+                    <label for="other">Enquery Type *</label><br>
+                    <div class="select_box">
+                        <img src="img/Arrow.png" alt="">
+                        <select id="other" name="enquiry_type"></select>
+                    </div>
+                    <input type="text" placeholder="Other" class="other_text" name="other_text">
+                    <div class="data_block">
+                        <div>
+                            <label for="name" class="for_name">Name *</label><br>
+                            <input type="text" placeholder="Dentist" id="name" class="name" name="user_name">
+                        </div>
+                        <div>
+                            <label for="email" class="for_mail">Email *</label><br>
+                            <input type="email" placeholder="rachelm@gmail.com" id="email" class="email" required name="email">
+                        </div>
+                    </div>
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" class="subject" name="subject"/>
+                    <div class="description_wrapper">
+                        <label for="field">Description *</label>
+                            <span class="description_info">(<span class="number">0</span>/1000)</span>
+                        <textarea id="field" maxlength="1000" name="description"></textarea>
+                    </div>
+                    <div>
+                        <label class="choose_file">
+                            <img src="" alt="Img" class="choose_file_image">
+
+                            <div class="choose_file_no_image">
+                                <p>Add photo</p>
+                                <p>Minimum size of 300x300 jpeg ipg png 5 MB</p>
+                            </div>
+
+                            <input type="file" name="photos" class="file">
+                        </label>
+                    </div>
+
+                </div>
+
+                <input type="submit" value="Submit" class="submit">
+
+            </form>
+        </div>
+    </div>
+</section>
+<footer>
+    <h2>About Denteez</h2>
+    <div class="text_box">
+        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam neque cupiditate a vel dolore laborum obcaecati officiis eius ad ullam saepe, ab maiores magni rerum nulla porro, tempore eveniet itaque qui repellat iste hic similique nemo. Et, libero repellat. Incidunt, illo voluptas ipsa suscipit?
+        </div>
+        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora necessitatibus ullam quod soluta saepeodit error, maxime praesentium sunt! Repudiandae animi tenetur labore atque officiis maxime suscipitexpedita obcaecati nulla in ducimus iure quos quam recusandae dolor.
+        </div>
+    </div>
+    <div class="rights_block">
+        <a href=""><p class="rights_info">Denteez Copyright 2015</p></a>
+        <ul class="rights">
+            <li><a href=""> Support</a></li>
+            <li><a href=""> Privacy Policy </a></li>
+            <li><a href=""> Terms of use </a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+    jQuery(document).ready(function ($) {
+        $(".file").change(function (event) {
+            var input = this;
+
+            if (input.files && input.files[0]) {
+                var type = input.files[0].type,
+                    size = input.files[0].size;
+
+                if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/ipg') {
+                    console.error('Not Image');
+                    return;
+                } else if (size > 5 * 1024 * 1024) {
+                    console.error('Image size more then 5Mb');
+                    return;
+                }
+                var $wrapper = $(this).closest('.choose_file'),
+                    $img = $wrapper.find('.choose_file_image'),
+                    $placeholder = $wrapper.find('.choose_file_no_image');
+
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $img.attr('src', e.target.result);
+
+                    var _img = new Image;
+                    _img.src = reader.result; 
+
+
+                    _img.onload = function () {
+                        if (_img.width < 300 || _img.height < 300) {
+                            console.error('Image size small');
+
+                            $wrapper.removeClass('with-image');
+                            $img.attr('src', '');
+                            return;
+                        }
+
+                        $wrapper.addClass('with-image');
+                    };
+
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+
+        });
+
+
+        $.ajax({
+            url: "http://504080.com/api/v1/directories/enquiry-types",
+            cache: false,
+            dataType: 'json',
+            success: function (respond) {
+                if ('success' in respond && respond.success && 'data' in respond && respond.data.length) {
+                    var $select = $('#other');
+
+                    respond.data.map(function (value) {
+                        $('<option/>').attr('value', value.name).html(value.name).appendTo($select)
+                    })
+                }
+            }
+        });
+
+        $('#other').on('change', function (event) {
+            var $this = $(this);
+            if ($this.val() === 'Other') {
+                $('.other_text').addClass('show');
+            } else {
+                $('.other_text').removeClass('show');
+            }
+        })
+
+        $('#field').on('keyup', function (event) {
+            var $info = $('.description_info .number'),
+                $this = $(this),
+                val = $this.val();
+
+            $info.html(val.length);
+        })
+
+        $('.form_').on('submit', function (event) {
+            event.preventDefault();
+
+            var $select = $('#other');
+           
+            var _return = true;
+
+            if ($select.val() === 'Other') {
+                var other_text = $('.other_text');
+
+                if (!other_text.val().length) {
+                    _return = false;
+                }
+
+            }
+            if (!$('#subject').val().length) {
+                _return = false;
+            }
+            if (!$('#name').val().length) {
+                _return = false;
+            }
+
+            var $email = $('.email');
+            if (!validateEmail($email.val())) {
+                _return = false;
+            }
+            if (_return) {
+                console.log('All fine');
+
+               $.ajax({
+                   type: "POST",
+                   url: "http://504080.com/api/v1/support",
+                   data: $(this).serialize(),
+                   success: function(msg){
+                       alert(msg.data.message);
+                   },
+                   error: function(respond,type,message) {
+                    alert(message);
+                    }
+                });
+            } else {
+                console.log('Error');
+
+            }
+
+        })
+
+        function validateEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+    })
+
+
+</script>
+
+</body>
+</html>
