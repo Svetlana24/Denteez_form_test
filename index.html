@@ -145,7 +145,7 @@
 
 
         $.ajax({
-            url: "http://504080.com/api/v1/directories/enquiry-types",
+            url: "httpS://504080.com/api/v1/directories/enquiry-types",
             cache: false,
             dataType: 'json',
             success: function (respond) {
@@ -207,7 +207,7 @@
 
                $.ajax({
                    type: "POST",
-                   url: "http://504080.com/api/v1/support",
+                   url: "httpS://504080.com/api/v1/support",
                    data: $(this).serialize(),
                    success: function(msg){
                        alert(msg.data.message);
