@@ -8,9 +8,6 @@
 
     <link rel="stylesheet" type="text/css" href="main.css">
 
-    <script
-            src="https://code.jquery.com/jquery-1.12.4.min.js">
-    </script>
 
     <title>Document</title>
 </head>
@@ -45,14 +42,15 @@
                         </div>
                         <div>
                             <label for="email" class="for_mail">Email *</label><br>
-                            <input type="email" placeholder="rachelm@gmail.com" id="email" class="email" required name="email">
+                            <input type="email" placeholder="rachelm@gmail.com" id="email" class="email" required
+                                   name="email">
                         </div>
                     </div>
                     <label for="subject">Subject *</label>
                     <input type="text" id="subject" class="subject" name="subject"/>
                     <div class="description_wrapper">
                         <label for="field">Description *</label>
-                            <span class="description_info">(<span class="number">0</span>/1000)</span>
+                        <span class="description_info">(<span class="number">0</span>/1000)</span>
                         <textarea id="field" maxlength="1000" name="description"></textarea>
                     </div>
                     <div>
@@ -64,7 +62,7 @@
                                 <p>Minimum size of 300x300 jpeg ipg png 5 MB</p>
                             </div>
 
-                            <input type="file" name="photos" class="file">
+                            <input type="file" name="photos" class="file" onchange="Preview(this)">
                         </label>
                     </div>
 
@@ -79,9 +77,13 @@
 <footer>
     <h2>About Denteez</h2>
     <div class="text_box">
-        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam neque cupiditate a vel dolore laborum obcaecati officiis eius ad ullam saepe, ab maiores magni rerum nulla porro, tempore eveniet itaque qui repellat iste hic similique nemo. Et, libero repellat. Incidunt, illo voluptas ipsa suscipit?
+        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam neque cupiditate a vel dolore laborum
+            obcaecati officiis eius ad ullam saepe, ab maiores magni rerum nulla porro, tempore eveniet itaque qui
+            repellat iste hic similique nemo. Et, libero repellat. Incidunt, illo voluptas ipsa suscipit?
         </div>
-        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora necessitatibus ullam quod soluta saepeodit error, maxime praesentium sunt! Repudiandae animi tenetur labore atque officiis maxime suscipitexpedita obcaecati nulla in ducimus iure quos quam recusandae dolor.
+        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora necessitatibus ullam quod soluta
+            saepeodit error, maxime praesentium sunt! Repudiandae animi tenetur labore atque officiis maxime
+            suscipitexpedita obcaecati nulla in ducimus iure quos quam recusandae dolor.
         </div>
     </div>
     <div class="rights_block">
@@ -94,143 +96,227 @@
     </div>
 </footer>
 
-<script>
-    jQuery(document).ready(function ($) {
-        $(".file").change(function (event) {
-            var input = this;
+<script type="text/javascript">
+    'use strict';
 
-            if (input.files && input.files[0]) {
-                var type = input.files[0].type,
-                    size = input.files[0].size;
+    function Preview(event) {
+        var input = event;
 
-                if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/ipg') {
-                    console.error('Not Image');
-                    return;
-                } else if (size > 5 * 1024 * 1024) {
-                    console.error('Image size more then 5Mb');
-                    return;
-                }
-                var $wrapper = $(this).closest('.choose_file'),
-                    $img = $wrapper.find('.choose_file_image'),
-                    $placeholder = $wrapper.find('.choose_file_no_image');
+        if (input.files && input.files[0]) {
+            var type = input.files[0].type,
+                size = input.files[0].size;
+            var _wrapper = document.getElementsByClassName('choose_file')[0];
+            var IMG = document.getElementsByClassName('choose_file_image')[0];
 
-
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $img.attr('src', e.target.result);
-
-                    var _img = new Image;
-                    _img.src = reader.result; 
-
-
-                    _img.onload = function () {
-                        if (_img.width < 300 || _img.height < 300) {
-                            console.error('Image size small');
-
-                            $wrapper.removeClass('with-image');
-                            $img.attr('src', '');
-                            return;
-                        }
-
-                        $wrapper.addClass('with-image');
-                    };
-
-                }
-
-                reader.readAsDataURL(input.files[0]);
+            if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/ipg') {
+                console.error('Not Image');
+                _wrapper.className = _wrapper.className.replace(/\bwith-image\b/g, " ");
+                IMG.src = '';
+                return;
+            } else if (size > 5 * 1024 * 1024) {
+                console.error('Image size more then 5Mb');
+                _wrapper.className = _wrapper.className.replace(/\bwith-image\b/g, " ");
+                IMG.src = '';
+                return;
             }
 
-        });
 
+            var reader = new FileReader();
 
-        $.ajax({
-            url: "httpS://504080.com/api/v1/directories/enquiry-types",
-            cache: false,
-            dataType: 'json',
-            success: function (respond) {
-                if ('success' in respond && respond.success && 'data' in respond && respond.data.length) {
-                    var $select = $('#other');
+            reader.onload = function (e) {
+                IMG.src = e.target.result;
 
-                    respond.data.map(function (value) {
-                        $('<option/>').attr('value', value.name).html(value.name).appendTo($select)
-                    })
-                }
-            }
-        });
+                var _img = new Image;
+                _img.src = reader.result;
 
-        $('#other').on('change', function (event) {
-            var $this = $(this);
-            if ($this.val() === 'Other') {
-                $('.other_text').addClass('show');
-            } else {
-                $('.other_text').removeClass('show');
-            }
-        })
+                console.log(_wrapper);
+                _img.onload = function () {
+                    if (_img.width < 300 || _img.height < 300) {
+                        console.error('Image size small');
 
-        $('#field').on('keyup', function (event) {
-            var $info = $('.description_info .number'),
-                $this = $(this),
-                val = $this.val();
-
-            $info.html(val.length);
-        })
-
-        $('.form_').on('submit', function (event) {
-            event.preventDefault();
-
-            var $select = $('#other');
-           
-            var _return = true;
-
-            if ($select.val() === 'Other') {
-                var other_text = $('.other_text');
-
-                if (!other_text.val().length) {
-                    _return = false;
-                }
-
-            }
-            if (!$('#subject').val().length) {
-                _return = false;
-            }
-            if (!$('#name').val().length) {
-                _return = false;
-            }
-
-            var $email = $('.email');
-            if (!validateEmail($email.val())) {
-                _return = false;
-            }
-            if (_return) {
-                console.log('All fine');
-
-               $.ajax({
-                   type: "POST",
-                   url: "httpS://504080.com/api/v1/support",
-                   data: $(this).serialize(),
-                   success: function(msg){
-                       alert(msg.data.message);
-                   },
-                   error: function(respond,type,message) {
-                    alert(message);
+                        _wrapper.className = _wrapper.className.replace(/\bwith-image\b/g, " ");
+                        IMG.src = '';
+                        return;
                     }
-                });
-            } else {
-                console.log('Error');
+                    var addname = " with-image";
+                    var arr = _wrapper.className.split(" ");
+
+                    _wrapper.className += addname;
+
+                };
+
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+    }
+
+
+    var xhr1 = new XMLHttpRequest();
+
+    xhr1.open('GET', 'http://504080.com/api/v1/directories/enquiry-types', true);
+
+    xhr1.onreadystatechange = function (respond) {
+        if (xhr1.readyState != 4) return;
+        respond = respond.currentTarget;
+        if (respond.status === 200 && typeof respond.response === 'string' && respond.response.length) {
+            try {
+                respond = JSON.parse(respond.response);
+            } catch (ex) {
+                respond = [];
+            }
+
+            if ('success' in respond && respond.success && 'data' in respond && respond.data.length) {
+                var _select = document.getElementById('other');
+                var _options = '',
+                    option = '';
+
+                respond.data.map(function (value) {
+                    option = document.createElement('option');
+                    option.value = value.name;
+                    option.innerHTML = value.name;
+                    _select.appendChild(option);
+                })
+            }
+        }
+    };
+    xhr1.send();
+
+    document.getElementById('other').addEventListener('change', function (event) {
+
+        var value = this.options[this.selectedIndex].value;
+        var show_text = document.getElementsByClassName('other_text')[0];
+        if (value === 'Other') {
+            var addname = " show";
+            show_text.className.split(" ");
+            show_text.className += addname;
+        } else {
+            show_text.className = show_text.className.replace(/\bshow\b/g, " ");
+        }
+
+    });
+
+    document.getElementById('field').addEventListener('keyup', function (event) {
+        var info = document.getElementsByClassName('description_info')[0],
+            number = info.getElementsByClassName('number')[0],
+            val = this.value;
+
+        number.innerHTML = val.length;
+    });
+
+    document.getElementsByClassName('form_')[0].addEventListener('submit', function (event) {
+
+        event.preventDefault();
+
+        var _select = document.getElementById('other'),
+            other_text = document.getElementsByClassName('other_text')[0],
+            subject = document.getElementById('subject'),
+            name = document.getElementById('name'),
+            _email = document.getElementsByClassName('email')[0],
+            description = document.getElementById('field');
+
+        var _return = true;
+
+        if (_select.options[_select.selectedIndex].value === 'Other') {
+
+            if (!other_text.value.length) {
+                console.log('Other empty');
+                _return = false;
+            }
+        }
+
+        if (!subject.value.length) {
+            console.log('Subject empty');
+            _return = false;
+        }
+        if (!name.value.length) {
+            console.log('Name empty');
+            _return = false;
+        }
+
+        if (!validateEmail(_email.value)) {
+            console.log('Email not valid');
+            _return = false;
+        }
+        if (_return) {
+            console.log('All fine');
+            var fd = new FormData();
+
+
+            var input = document.getElementsByClassName('file')[0];
+            if (input.files && input.files[0]) {
+                var IMG = document.getElementsByClassName('choose_file_image')[0];
+                if (IMG.src !== '') {
+                    fd.append('file', input.files[0]);
+                }
 
             }
 
-        })
+            fd.append('enquiry_type', _select.options[_select.selectedIndex].value);
+            fd.append('other_text', other_text.value);
+            fd.append('email', _email.value);
+            fd.append('subject', subject.value);
+            fd.append('description', description.value);
+            fd.append('user_name', name.value);
 
-        function validateEmail(email) {
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
+            var body = 'enquiry_type=' + encodeURIComponent(_select.options[_select.selectedIndex].value) +
+                '&other_text=' + encodeURIComponent(other_text.value) +
+                '&email=' + encodeURIComponent(_email.value) +
+                '&subject=' + encodeURIComponent(subject.value) +
+                '&description=' + encodeURIComponent(description.value) +
+                '&user_name=' + encodeURIComponent(name.value);
+
+            var request = new XMLHttpRequest();
+            request.open('POST', 'http://504080.com/api/v1/support', true);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.send(body);
+
+            request.onreadystatechange = function (res) {
+                if (this.readyState !== 4) return;
+
+                var modal = document.getElementsByClassName('modal')[0],
+                    message = modal.getElementsByClassName('text')[0],
+                    close = modal.getElementsByClassName('close')[0];
+
+                close.addEventListener('click', closeModal);
+
+                message.innerHTML = this.status !== 200 ? 'Error' : 'Thank you for your registration!';
+                modal.className += ' show';
+
+            }
+
         }
-    })
+    });
+
+    function closeModal() {
+        var modal = document.getElementsByClassName('modal')[0],
+            close = modal.getElementsByClassName('close')[0];
+
+        modal.className = modal.className.replace(/\bshow\b/g, " ");
+        close.removeEventListener('click', closeModal);
+    }
+
+
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
 
 
 </script>
+
+<div class="modal">
+    <div class="wrapper">
+
+        <div class="message">
+            <div class="nav">
+                <button class="close">X</button>
+            </div>
+            <div class="text"></div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
